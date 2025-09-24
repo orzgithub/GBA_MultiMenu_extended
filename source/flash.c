@@ -82,6 +82,22 @@ IWRAM_CODE void FlashDetectType(void)
 		FlashCalcOffsets();
 		return;
 	}
+	
+	// 1G or 2G cart with S29GL01G (Chisflash 1.0G and 2.0G)
+	_FLASH_WRITE(0, 0xF0);
+	_FLASH_WRITE(0xAAA, 0xAA);
+	_FLASH_WRITE(0x555, 0x55);
+	_FLASH_WRITE(0xAAA, 0x90);
+	data = *(vu32 *)AGB_ROM;
+	_FLASH_WRITE(0, 0xF0);
+	if (data == 0x227E0001)
+	{
+		REG_IE = ie;
+		flash_type = 4;
+		flash_sector_size = 0x20000;
+		FlashCalcOffsets();
+		return;
+	}
 
 	// Unknown type
 	REG_IE = ie;
@@ -143,6 +159,24 @@ IWRAM_CODE void FlashEraseSector(u32 address)
 		_FLASH_WRITE(0xAAA, 0x80);
 		_FLASH_WRITE(0xAAA, 0xA9);
 		_FLASH_WRITE(0x555, 0x56);
+		_FLASH_WRITE(address, 0x30);
+		while (1)
+		{
+			__asm("nop");
+			if ((*((vu16 *)(AGB_ROM + address))) == 0xFFFF)
+			{
+				break;
+			}
+		}
+		_FLASH_WRITE(address, 0xF0);
+	}
+	else if (_flash_type == 4)
+	{
+		_FLASH_WRITE(0xAAA, 0xAA);
+		_FLASH_WRITE(0x555, 0x55);
+		_FLASH_WRITE(0xAAA, 0x80);
+		_FLASH_WRITE(0xAAA, 0xAA);
+		_FLASH_WRITE(0x555, 0x55);
 		_FLASH_WRITE(address, 0x30);
 		while (1)
 		{
@@ -242,6 +276,33 @@ IWRAM_CODE void FlashWriteData(u32 address, u32 length)
 				_FLASH_WRITE(address + (j * 0x40) + i, data);
 			}
 			_FLASH_WRITE(address + (j * 0x40), 0x2A);
+			while (1)
+			{
+				__asm("nop");
+				if (p_rom[(j * 0x20) + 0x1F] == data)
+				{
+					break;
+				}
+			}
+		}
+		_FLASH_WRITE(address, 0xF0);
+	}
+	else if (_flash_type == 4)
+	{
+		for (int j = 0; j < (int)(length / 0x40); j++)
+		{
+			_FLASH_WRITE(0xAAA, 0xAA);
+			_FLASH_WRITE(0x555, 0x55);
+			_FLASH_WRITE(address + (j * 0x40), 0x25);
+			_FLASH_WRITE(address + (j * 0x40), 0x1F);
+			u16 data = 0;
+			for (int i = 0; i < 0x40; i += 2)
+			{
+				__asm("nop");
+				data = data_buffer[(j * 0x40) + i + 1] << 8 | data_buffer[(j * 0x40) + i];
+				_FLASH_WRITE(address + (j * 0x40) + i, data);
+			}
+			_FLASH_WRITE(address + (j * 0x40), 0x29);
 			while (1)
 			{
 				__asm("nop");
