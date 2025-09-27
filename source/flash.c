@@ -18,7 +18,7 @@ u32 flash_itemlist_sector_offset;
 u32 flash_status_sector_offset;
 u32 flash_save_sector_offset;
 EWRAM_BSS u8 sram_register_backup[4];
-EWRAM_BSS u8 data_buffer[SRAM_SIZE];
+EWRAM_BSS u8 data_buffer[SRAM_SIZE * 2];
 
 void FlashCalcOffsets(void)
 {
@@ -318,6 +318,22 @@ IWRAM_CODE void FlashWriteData(u32 address, u32 length)
 	REG_IE = ie;
 }
 
+IWRAM_CODE void SwitchBank(u8 bank)
+{
+	if (flash_type == 0)
+	{
+		FlashDetectType();
+	}
+	u8 _flash_type = flash_type;
+
+	if (_flash_type == 4) {
+		*((volatile u8*)0x9000000) = bank & 0x01; // Chisflash 1.0G and 2.0G can switch between two ram banks.
+		for(int i = 0; i < 5; i++) {
+	        asm("nop");
+	    }
+	}
+}
+
 IWRAM_CODE void DrawBootStatusLine(u8 begin, u8 end)
 {
 	for (int i = begin; i < end; i++)
@@ -338,6 +354,8 @@ IWRAM_CODE u8 BootGame(ItemConfig config, FlashStatus status)
 	if (_flash_type == 0)
 		return 1;
 
+	u8 _support_sram_bank = _flash_type == 4 ? 1 : 0;
+
 	// Temporarily store SRAM values located at mapper registers
 	sram_register_backup[0] = *(vu8 *)MAPPER_CONFIG1;
 	sram_register_backup[1] = *(vu8 *)MAPPER_CONFIG2;
@@ -356,12 +374,21 @@ IWRAM_CODE u8 BootGame(ItemConfig config, FlashStatus status)
 			{
 				data_buffer[i] = ((vu8 *)AGB_SRAM)[i];
 			}
+			if (_support_sram_bank)
+			{
+				SwitchBank(1);
+				for (int i = 0; i < SRAM_SIZE; i++)
+				{
+					data_buffer[SRAM_SIZE + i] = ((vu8 *)AGB_SRAM)[i];
+				}
+				SwitchBank(0);
+			}
 			data_buffer[2] = sram_register_backup[0];
 			data_buffer[3] = sram_register_backup[1];
 			data_buffer[4] = sram_register_backup[2];
 			data_buffer[5] = sram_register_backup[3];
 			FlashEraseSector((_flash_save_block_offset + status.last_boot_save_index) * _flash_sector_size);
-			FlashWriteData((_flash_save_block_offset + status.last_boot_save_index) * _flash_sector_size, SRAM_SIZE);
+			FlashWriteData((_flash_save_block_offset + status.last_boot_save_index) * _flash_sector_size, _support_sram_bank ? SRAM_SIZE * 2 : SRAM_SIZE);
 		}
 	}
 
@@ -379,7 +406,7 @@ IWRAM_CODE u8 BootGame(ItemConfig config, FlashStatus status)
 	// Read new SRAM from flash
 	if (config.save_type != SRAM_NONE)
 	{
-		for (int i = 0; i < SRAM_SIZE; i += 2)
+		for (int i = 0; i < (_support_sram_bank ? SRAM_SIZE * 2 : SRAM_SIZE); i += 2)
 		{
 			data_buffer[i] = *((vu16 *)(AGB_ROM + ((_flash_save_block_offset + config.save_index) * _flash_sector_size) + i)) & 0xFF;
 			data_buffer[i + 1] = *((vu16 *)(AGB_ROM + ((_flash_save_block_offset + config.save_index) * _flash_sector_size) + i)) >> 8;
@@ -424,6 +451,15 @@ IWRAM_CODE u8 BootGame(ItemConfig config, FlashStatus status)
 		for (int i = 0; i < SRAM_SIZE; i++)
 		{
 			((vu8 *)AGB_SRAM)[i] = data_buffer[i];
+		}
+		if (_support_sram_bank)
+		{
+			SwitchBank(1);
+			for (int i = 0; i < SRAM_SIZE; i++)
+			{
+				((vu8 *)AGB_SRAM)[i] = data_buffer[SRAM_SIZE + i];
+			}
+			SwitchBank(0);
 		}
 	}
 	else
