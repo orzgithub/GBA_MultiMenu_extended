@@ -24,6 +24,8 @@ Set `type` to `1` or `2`:
 - `2` = 6600M0U0BE (e.g. 369IN1 2048M, 256 MiB)
 - `3` = MSP54LV100 (e.g. The Legend of Zelda Collection - Classic Edition 7-in-1, 128 MiB)
 - `4` = F0095H0 (e.g. 53 in one 4G, 512 MiB)
+- `5` = Chisflash 1.0G (A community designed flashcard, 128 MiB)
+- `6` = Chisflash 2.0G (A community designed flashcard, 256 MiB)
 
 Set `battery_present` to `true` or `false`. This will enable enhanced save data handling which will only be functional with a working battery.
 
