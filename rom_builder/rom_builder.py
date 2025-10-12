@@ -63,13 +63,13 @@ cartridge_types = [
 		"block_size":0x80000,
 	},
     {
-        "name": "ChisFlash 1.0G",
+        "name": "S29GL01G or MT28EW01G",
         "flash_size": 0x8000000,
         "sector_size": 0x20000,
         "block_size": 0x80000,
     },
     {
-        "name": "ChisFlash 2.0G",
+        "name": "S70GL02G",
         "flash_size": 0x10000000,
         "sector_size": 0x20000,
         "block_size": 0x80000,
