@@ -83,14 +83,14 @@ IWRAM_CODE void FlashDetectType(void)
 		return;
 	}
 	
-	// 1G or 2G cart with S29GL01G (Chisflash 1.0G and 2.0G)
+	// 1G or 2G cart with S29GL01G or MT28EW01G (Chisflash 1.0G and 2.0G)
 	_FLASH_WRITE(0, 0xF0);
 	_FLASH_WRITE(0xAAA, 0xAA);
 	_FLASH_WRITE(0x555, 0x55);
 	_FLASH_WRITE(0xAAA, 0x90);
 	data = *(vu32 *)AGB_ROM;
 	_FLASH_WRITE(0, 0xF0);
-	if (data == 0x227E0001)
+	if (data == 0x227E0001 || data == 0x227E0089)
 	{
 		REG_IE = ie;
 		flash_type = 4;

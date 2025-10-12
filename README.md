@@ -24,8 +24,8 @@ Set `type` to `1` or `2`:
 - `2` = 6600M0U0BE (e.g. 369IN1 2048M, 256 MiB)
 - `3` = MSP54LV100 (e.g. The Legend of Zelda Collection - Classic Edition 7-in-1, 128 MiB)
 - `4` = F0095H0 (e.g. 53 in one 4G, 512 MiB)
-- `5` = Chisflash 1.0G (A community designed flashcard, 128 MiB)
-- `6` = Chisflash 2.0G (A community designed flashcard, 256 MiB)
+- `5` = S29GL01G or MT28EW01G (e.g Chisflash 1.0G ,a community designed flashcard, 128 MiB)
+- `6` = S70GL02G (e.g Chisflash 2.0G ,a community designed flashcard, 256 MiB)
 
 Set `battery_present` to `true` or `false`. This will enable enhanced save data handling which will only be functional with a working battery.
 
@@ -88,6 +88,7 @@ Tested repro cartridges:
 - 100BS6600_48BALL_V4 with 6600M0U0BE
 - SUN100S_MSP54_XXX_BGA48 with MSP54LV100
 - F0095_4G_V1 with F0095H0
+- Chisflash with S29GL01G or MT28EW01G or S70GL02G
 
 The generated compilation ROM can be written and read using a [GBxCart RW v1.4+](https://www.gbxcart.com/) device by insideGadgets and the [FlashGBX](https://github.com/lesserkuma/FlashGBX) software.
 
