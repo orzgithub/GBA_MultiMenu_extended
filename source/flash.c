@@ -11,6 +11,7 @@ Author: Lesserkuma (github.com/lesserkuma)
 #include "flash.h"
 
 u8 flash_type;
+u8 sram_bank_type;
 u8 *itemlist;
 u16 itemlist_offset;
 u32 flash_sector_size;
@@ -83,7 +84,8 @@ IWRAM_CODE void FlashDetectType(void)
 		return;
 	}
 	
-	// 1G or 2G cart with S29GL01G or MT28EW01G (Chisflash 1.0G and 2.0G)
+	// 1G or 2G cart with S29GL01G or MT28EW01G or S70GL02G (Chisflash 1.0G and 2.0G)
+	// S70GL02G has two S29GL01G and has two command addresses, but the menu only write on the first die so it's as same as S29GL01G.
 	_FLASH_WRITE(0, 0xF0);
 	_FLASH_WRITE(0xAAA, 0xAA);
 	_FLASH_WRITE(0x555, 0x55);
@@ -318,19 +320,43 @@ IWRAM_CODE void FlashWriteData(u32 address, u32 length)
 	REG_IE = ie;
 }
 
+IWRAM_CODE void SRAMBankDetectType(void)
+{
+	vu8 _mapper_config4_bak = *(vu8 *)MAPPER_CONFIG4;
+	*(vu8 *)MAPPER_CONFIG4 = 1;
+
+	for (int i = 0; i < SRAM_SIZE; i++)
+	{
+		data_buffer[i] = ((vu8 *)AGB_SRAM)[i]; // read bank 0.
+	}
+
+	// method 1: select bank on 0x9000000
+	*((volatile u8*)0x9000000) = 1;
+	for (int i = 0; i < SRAM_SIZE; i++)
+	{
+		if (data_buffer[i] != ((vu8 *)AGB_SRAM)[i]) // not really a good way, but seems that no game save the same data in both banks so it works.
+		{
+			sram_bank_type = 1;
+			*(vu8 *)MAPPER_CONFIG4 = _mapper_config4_bak;
+			return;
+		}
+	}
+
+	// add more methods here if needed.
+	sram_bank_type = 0;
+	*(vu8 *)MAPPER_CONFIG4 = _mapper_config4_bak;
+}
+
 IWRAM_CODE void SwitchBank(u8 bank)
 {
-	if (flash_type == 0)
-	{
-		FlashDetectType();
-	}
-	u8 _flash_type = flash_type;
+	u8 _sram_bank_type = sram_bank_type;
 
-	if (_flash_type == 4) {
+	if (_sram_bank_type == 1) {
 		*((volatile u8*)0x9000000) = bank & 0x01; // Chisflash 1.0G and 2.0G can switch between two ram banks.
 		for(int i = 0; i < 5; i++) {
 	        asm("nop");
 	    }
+		return;
 	}
 }
 
@@ -353,8 +379,9 @@ IWRAM_CODE u8 BootGame(ItemConfig config, FlashStatus status)
 	u8 _flash_type = flash_type;
 	if (_flash_type == 0)
 		return 1;
-
-	u8 _support_sram_bank = _flash_type == 4 ? 1 : 0;
+	
+	u8 _sram_bank_type = sram_bank_type;
+	BOOL _support_sram_bank = _sram_bank_type == 0 ? FALSE : TRUE;
 
 	// Temporarily store SRAM values located at mapper registers
 	sram_register_backup[0] = *(vu8 *)MAPPER_CONFIG1;
