@@ -380,6 +380,12 @@ IWRAM_CODE u8 BootGame(ItemConfig config, FlashStatus status)
 	if (_flash_type == 0)
 		return 1;
 	
+	if (status.sram_bank_type == 0) { // Detect SRAM bank type only when type is unknown. When confirmed, always use the value.
+		SRAMBankDetectType();
+		status.sram_bank_type = sram_bank_type;
+	} else {
+		sram_bank_type = status.sram_bank_type;
+	}
 	u8 _sram_bank_type = sram_bank_type;
 	BOOL _support_sram_bank = _sram_bank_type == 0 ? FALSE : TRUE;
 

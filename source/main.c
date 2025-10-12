@@ -149,6 +149,7 @@ int main(void) {
 		sFlashStatus.last_boot_menu_index = 0xFFFF;
 		sFlashStatus.last_boot_save_index = 0xFF;
 		sFlashStatus.last_boot_save_type = SRAM_NONE;
+		sFlashStatus.sram_bank_type = 0;
 	} else {
 		cursor_pos = sFlashStatus.last_boot_menu_index % 8;
 		page_active = sFlashStatus.last_boot_menu_index / 8;

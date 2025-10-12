@@ -24,6 +24,7 @@ typedef struct __attribute__((packed)) FlashStatus_
     u16 last_boot_menu_index;
     u8 last_boot_save_index;
     SAVE_TYPE last_boot_save_type;
+    u8 sram_bank_type;
 } FlashStatus;
 
 IWRAM_CODE void FlashDetectType(void);
