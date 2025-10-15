@@ -39,7 +39,7 @@ def logp(*args, **kwargs):
 
 cartridge_types = [
 	{
-		"name":"MSP55LV100S",
+		"name":"MSP55LV100S or S29GL512",
 		"flash_size":0x4000000,
 		"sector_size":0x20000,
 		"block_size":0x80000,
@@ -51,7 +51,7 @@ cartridge_types = [
 		"block_size":0x80000,
 	},
 	{
-		"name":"MSP54LV100",
+		"name":"MSP54LV100 or S29GL01G",
 		"flash_size":0x8000000,
 		"sector_size":0x20000,
 		"block_size":0x80000,
@@ -62,12 +62,6 @@ cartridge_types = [
 		"sector_size":0x40000,
 		"block_size":0x80000,
 	},
-    {
-        "name": "S29GL01G or MT28EW01G",
-        "flash_size": 0x8000000,
-        "sector_size": 0x20000,
-        "block_size": 0x80000,
-    },
     {
         "name": "S70GL02G",
         "flash_size": 0x10000000,
@@ -210,10 +204,9 @@ item_list_offset = math.ceil(item_list_offset / sector_size)
 UpdateSectorMap(start=item_list_offset, length=1, c="l")
 status_offset = item_list_offset + 1
 UpdateSectorMap(start=status_offset, length=1, c="c")
+status = bytearray([0x4B, 0x55, 0x4D, 0x41, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
 if battery_present:
-	status = bytearray([0x4B, 0x55, 0x4D, 0x41, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
-else:
-	status = bytearray([0x4B, 0x55, 0x4D, 0x41, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
+	status[5] = 0x01
 compilation[status_offset * sector_size:status_offset * sector_size + len(status)] = status
 save_data_sector_offset = status_offset + 1
 boot_logo_found = hashlib.sha1(compilation[0x04:0xA0]).digest() == bytearray([ 0x17, 0xDA, 0xA0, 0xFE, 0xC0, 0x2F, 0xC3, 0x3C, 0x0F, 0x6A, 0xBB, 0x54, 0x9A, 0x8B, 0x80, 0xB6, 0x61, 0x3B, 0x48, 0xEE ])

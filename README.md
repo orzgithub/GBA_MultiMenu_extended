@@ -20,12 +20,13 @@ The following section must be edited in order to specify the cartridge type to u
 },
 ```
 Set `type` to `1` or `2`:
-- `1` = MSP55LV100S (e.g. The Legend of Zelda Collection - Classic Edition 7-in-1, 64 MiB)
+- `1` = MSP55LV100S (e.g. The Legend of Zelda Collection - Classic Edition 7-in-1, 64 MiB) or S29GL512 (currently no example, some custom caririge are using this)
 - `2` = 6600M0U0BE (e.g. 369IN1 2048M, 256 MiB)
-- `3` = MSP54LV100 (e.g. The Legend of Zelda Collection - Classic Edition 7-in-1, 128 MiB)
+- `3` = MSP54LV100 (e.g. The Legend of Zelda Collection - Classic Edition 7-in-1, 128 MiB) S29GL01G or MT28EW01G (e.g Chisflash 1.0G ,a community designed flashcard, both of these two models were found used on this cart, 128 MiB)
 - `4` = F0095H0 (e.g. 53 in one 4G, 512 MiB)
-- `5` = S29GL01G or MT28EW01G (e.g Chisflash 1.0G ,a community designed flashcard, 128 MiB)
-- `6` = S70GL02G (e.g Chisflash 2.0G ,a community designed flashcard, 256 MiB)
+- `5` = S70GL02G (e.g Chisflash 2.0G ,a community designed flashcard, 256 MiB)
+
+The similar nor flash may also supported, for example, JS28Fxxx share the same command, the manufacturer code and the device code 1 with MT28EWxxx so it work as same as the MT28EWxxx. Most nor flash with 28 or 29 from MXIC/Infineon(Cypress)/Micron may work. It's impossible to list all the model here. Only some iconic and tested flash models will be listed here.
 
 Set `battery_present` to `true` or `false`. This will enable enhanced save data handling which will only be functional with a working battery.
 
