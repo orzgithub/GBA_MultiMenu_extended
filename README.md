@@ -1,4 +1,4 @@
-# GBA Multi Game Menu (by Lesserkuma)
+# GBA Multi Game Menu (by Lesserkuma and ZaindORp)
 
 This is a menu program to be run on Game Boy Advance bootleg cartridges which are equipped with a special multi-game mapper.
 
