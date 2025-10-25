@@ -1,6 +1,6 @@
 /*
 GBA Multi Game Menu
-Author: Lesserkuma (github.com/lesserkuma)
+Author: Lesserkuma (github.com/lesserkuma), ZaindORp (github.com/orzgithub)
 */
 
 #ifndef FLASH_H_

@@ -2,7 +2,7 @@
 
 This is a menu program to be run on Game Boy Advance bootleg cartridges which are equipped with a special multi-game mapper.
 
-The binaries are available in the [Releases](https://github.com/lesserkuma/GBA_MultiMenu/releases) section.
+The binaries are available in the [Releases](https://github.com/orzgithub/GBA_MultiMenu_extended/releases) section.
 
 ## Usage
 

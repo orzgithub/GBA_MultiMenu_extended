@@ -1,6 +1,6 @@
 /*
 GBA Multi Game Menu
-Author: Lesserkuma (github.com/lesserkuma)
+Author: Lesserkuma (github.com/lesserkuma), ZaindORp (github.com/orzgithub)
 */
 
 #include <gba.h>
@@ -130,7 +130,7 @@ int main(void) {
 		DrawText(0, 64, ALIGN_CENTER, u"Please use the ROM Builder to", 48, font, (void*)AGB_VRAM+0xA000, FALSE);
 		DrawText(0, 64 + sFontSpecs.max_height, ALIGN_CENTER, u"create your own compilation.", 48, font, (void*)AGB_VRAM+0xA000, FALSE);
 		LoadFont(0);
-		DrawText(0, 127, ALIGN_CENTER, u"https://github.com/lesserkuma/GBA_MultiMenu", 48, font, (void*)AGB_VRAM+0xA000, FALSE);
+		DrawText(0, 127, ALIGN_CENTER, u"https://github.com/orzgithub/GBA_MultiMenu_extended", 48, font, (void*)AGB_VRAM+0xA000, FALSE);
 		DrawText(14, SCREEN_HEIGHT - sFontSpecs.max_height - 3 - FontMarginBottom, ALIGN_RIGHT, u"No ROMs", 10, font, (void*)AGB_VRAM+0xA000, FALSE);
 		REG_DISPCNT ^= 0x0010;
 		while (1) { VBlankIntrWait(); }

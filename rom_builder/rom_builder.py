@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # GBA Multi Game Menu – ROM Builder
-# Author: Lesserkuma (github.com/lesserkuma)
+# Author: Lesserkuma (github.com/lesserkuma), ZaindORp (github.com/orzgithub)
 
 import sys, os, glob, json, math, re, struct, hashlib, argparse, datetime
 
