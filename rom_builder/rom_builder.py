@@ -322,8 +322,15 @@ for game in games:
 
 # Read ROM data
 games.sort(key=lambda game: game["size"], reverse=True)
+added_file = {}
 for game in games:
 	found = False
+	if game["file"] in added_file and battery_present:
+		game["sector_offset"] = added_file[game["file"]]["sector_offset"]
+		game["block_offset"] = added_file[game["file"]]["block_offset"]
+		game["block_count"] = added_file[game["file"]]["block_count"]
+		found = True
+		continue
 	for i in range(save_end_offset, len(sector_map)):
 		sector_count_map = game["sector_count"]
 		
@@ -340,6 +347,12 @@ for game in games:
 				game["block_offset"] = game["sector_offset"] * sector_size // block_size
 				game["block_count"] = sector_count_map * sector_size // block_size
 				found = True
+
+				added_file[game["file"]] = {
+					"sector_offset": game["sector_offset"],
+					"block_offset": game["block_offset"],
+					"block_count": game["block_count"]
+				}
 				
 				if not boot_logo_found and hashlib.sha1(rom[0x04:0xA0]).digest() == bytearray([ 0x17, 0xDA, 0xA0, 0xFE, 0xC0, 0x2F, 0xC3, 0x3C, 0x0F, 0x6A, 0xBB, 0x54, 0x9A, 0x8B, 0x80, 0xB6, 0x61, 0x3B, 0x48, 0xEE ]):
 					compilation[0x04:0xA0] = rom[0x04:0xA0] # boot logo
