@@ -91,11 +91,11 @@ Tested repro cartridges:
 - F0095_4G_V1 with F0095H0
 - Chisflash with S29GL01G or MT28EW01G or S70GL02G
 
-The generated compilation ROM can be written and read using a [GBxCart RW v1.4+](https://www.gbxcart.com/) device by insideGadgets and the [FlashGBX](https://github.com/lesserkuma/FlashGBX) software.
+The generated compilation ROM can be written and read with most cartrige writer supported by [FlashGBX](https://github.com/lesserkuma/FlashGBX) software.
 
 ## Thanks
 Thanks to FraX, Ausar, liuyunx, BennVenn, Jenetrix, Matt
 
 ## Screenshots
 
-<img src="https://raw.githubusercontent.com/lesserkuma/GBA_MultiMenu/master/.github/screen.png" alt="" />
+<img src="https://raw.githubusercontent.com/orzgithub/GBA_MultiMenu_extended/master/.github/screen.png" alt="" />
